@@ -1,0 +1,77 @@
+<link rel="stylesheet" href="../public/css/style.css">
+
+<div class="applications-container">
+  <h2>All Job Applications</h2>
+  <table class="applications-table styled-table">
+    <thead>
+      <tr>
+        <th>SN</th>
+        <th>Job Title</th>
+        <th>Applied By</th>
+        <th>Posted By</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each applications}}
+      <tr>
+        <td>{{inc @index}}</td>
+        <td>{{job.title}}</td>
+        <td>{{candidate.name}}</td>
+        <td>{{job.recruiterId.name}}</td>
+        <td>{{status}}</td>
+        <td>
+          <a href="/applications/delete/{{_id}}" class="btn-delete btn-delete-application" data-id="{{_id}}">Delete</a>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const deleteLinks = document.querySelectorAll('.btn-delete-application');
+
+    deleteLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const applicationId = link.getAttribute('data-id');
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "This will delete the application permanently!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(`/applications/delete/${applicationId}`, { method: 'DELETE' })
+              .then(res => {
+                if (res.ok) {
+                  Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Application has been removed.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                } else {
+                  Swal.fire('Error!', 'Failed to delete application.', 'error');
+                }
+              })
+              .catch(() => {
+                Swal.fire('Error!', 'Server error occurred.', 'error');
+              });
+          }
+        });
+      });
+    });
+  });
+</script>

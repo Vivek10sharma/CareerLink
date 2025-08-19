@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="../public/css/style.css">
+
+<div class="container">
+  <h2>Recruiter Management</h2>
+  <table class="styled-table">
+    <thead>
+      <tr>
+        <th>SN</th>
+        <th>Recruiter Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each recruiters}}
+        <tr>
+         <td>{{inc @index}}</td>
+          <td>{{this.name}}</td>
+          <td>{{this.email}}</td>
+          <td>
+           <a href="/recruiters/delete/{{this._id}}" class="btn-delete" data-id="{{this._id}}">Delete</a>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const recruiterId = button.getAttribute('data-id');
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "This will delete the recruiter, their jobs, and all applications!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Send GET request to delete
+            fetch(`/recruiters/delete/${recruiterId}`)
+              .then(res => {
+                if (res.ok) {
+                  Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Recruiter has been removed.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                } else {
+                  Swal.fire('Error!', 'Failed to delete recruiter.', 'error');
+                }
+              })
+              .catch(() => {
+                Swal.fire('Error!', 'Server error occurred.', 'error');
+              });
+          }
+        });
+      });
+    });
+  });
+</script>

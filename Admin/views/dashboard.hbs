@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="../public/css/style.css">
+
+<div class="dashboard">
+  <h2 class="dashboard-title">Admin Dashboard</h2>
+  
+    <div class="kpi-cards">
+    <div class="card">
+      <div class="card-value">{{totalCandidates}}</div>
+      <div class="card-label">Total Candidates</div>
+      <div class="bar" style="--bar-width: {{totalCandidatesPct}}%;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-value">{{totalRecruiters}}</div>
+      <div class="card-label">Total Recruiters</div>
+      <div class="bar" style="--bar-width: {{totalRecruitersPct}}%;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-value">{{totalJobs}}</div>
+      <div class="card-label">Total Jobs</div>
+      <div class="bar" style="--bar-width: {{totalJobsPct}}%;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-value">{{totalApplications}}</div>
+      <div class="card-label">Applications</div>
+      <div class="bar" style="--bar-width: {{totalApplicationsPct}}%;"></div>
+    </div>
+    
+    <div class="card">
+      <div class="card-value">{{pendingApplications}}</div>
+      <div class="card-label">Pending Applications</div>
+      <div class="bar" style="--bar-width: {{pendingApplicationsPct}}%;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-value">{{approvedApplications}}</div>
+      <div class="card-label">Approved Applications</div>
+      <div class="bar" style="--bar-width: {{approvedApplicationsPct}}%;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-value">{{rejectedApplications}}</div>
+      <div class="card-label">Rejected Applications</div>
+      <div class="bar" style="--bar-width: {{rejectedApplicationsPct}}%;"></div>
+    </div>
+  </div>
+
+  <section class="latest-jobs-section">
+    <h3>Latest Jobs</h3>
+    <ul class="latest-jobs-list">
+      {{#each latestJobs}}
+      <li class="job-item">
+        <span class="job-title">{{title}}</span> 
+        <span class="job-date">{{moment createdAt "YYYY-MM-DD"}}</span>
+      </li>
+      {{/each}}
+    </ul>
+  </section>
+</div>
+
+
+

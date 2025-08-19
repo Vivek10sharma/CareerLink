@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Candidates</title>
+  <link rel="stylesheet" href="../public/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Manage Candidates</h2>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>SN</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each candidates}}
+        <tr>
+          <td>{{inc @index}}</td>
+          <td>{{this.name}}</td>
+          <td>{{this.email}}</td>
+          <td>
+            <a href="/candidates/delete/{{this._id}}" class="btn-delete" data-id="{{this._id}}">Delete</a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const candidateId = button.getAttribute('data-id');
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "This will delete the candidate and all related applications!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(`/candidates/delete/${candidateId}`, { method: 'DELETE' })
+              .then(res => {
+                if (res.ok) {
+                  Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Candidate has been removed.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                } else {
+                  Swal.fire('Error!', 'Failed to delete candidate.', 'error');
+                }
+              })
+              .catch(() => {
+                Swal.fire('Error!', 'Server error occurred.', 'error');
+              });
+          }
+        });
+      });
+    });
+  });
+</script>

@@ -1,0 +1,61 @@
+<link rel="stylesheet" href="../../public/css/style.css">
+<header class="admin-header">
+  <div class="container">
+    <h1>CareerLink Admin Portal</h1>
+    <nav class="nav-links">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/recruiter">Recruiters</a>
+      <a href="/candidate">Candidates</a>
+      <a href="/jobs">Jobs</a>
+      <a href="/applications">Applications</a>
+     <a href="#" class="logout-btn" id="logoutBtn">Logout</a>
+    </nav>
+  </div>
+</header>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+ document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+  e.preventDefault();
+
+  const logoutBtn = e.target;
+  logoutBtn.disabled = true;
+
+  const result = await Swal.fire({
+    title: 'Are you sure?',
+    text: "Do you want to logout?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, logout',
+    cancelButtonText: 'No, stay logged in',
+    reverseButtons: true
+  });
+
+  if (result.isConfirmed) {
+    try {
+      const response = await fetch('/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (response.ok) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Logged out successfully!',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        window.location.href = '/login';
+      } else {
+        Swal.fire('Error', 'Logout failed. Please try again.', 'error');
+      }
+    } catch (error) {
+      Swal.fire('Error', 'Network error. Please try again.', 'error');
+    }
+  }
+
+  logoutBtn.disabled = false;
+});
+
+</script>

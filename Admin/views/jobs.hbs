@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Jobs</title>
+  <link rel="stylesheet" href="../public/css/style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h2>Manage Jobs</h2>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>SN</th>
+          <th>Posted By</th>
+          <th>Title</th>
+          <th>Location</th>
+          <th>Company</th>
+          <th>Category</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each jobs}}
+        <tr>
+          <td>{{inc @index}}</td>
+          <td>{{this.recruiterId.name}}</td>
+          <td>{{this.title}}</td>
+          <td>{{this.location}}</td>
+          <td>{{this.company}}</td>
+          <td>{{this.category}}</td>
+          <td>
+           <a href="/jobs/delete/{{this._id}}" class="btn-delete btn-delete-job" data-id="{{this._id}}">Delete</a>
+
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const deleteButtons = document.querySelectorAll('.btn-delete-job');
+
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const jobId = button.getAttribute('data-id');
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "This will delete the job and all related applications!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch(`/jobs/delete/${jobId}`, { method: 'DELETE' })
+              .then(res => {
+                if (res.ok) {
+                  Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Job and related applications have been removed.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                  }).then(() => {
+                    window.location.reload();
+                  });
+                } else {
+                  Swal.fire('Error!', 'Failed to delete job.', 'error');
+                }
+              })
+              .catch(() => {
+                Swal.fire('Error!', 'Server error occurred.', 'error');
+              });
+          }
+        });
+      });
+    });
+  });
+</script>
